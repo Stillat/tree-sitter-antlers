@@ -1,0 +1,50 @@
+name: Request grammar support
+description: Propose an Antlers construct or syntax-tree improvement for the grammar.
+title: "[Feature]: "
+labels: [enhancement]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the suggestion. Concrete Antlers syntax and the desired tree
+        shape make grammar changes much easier to evaluate.
+
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem should this solve?
+      description: Explain which parser or syntax-tree limitation affects a grammar consumer.
+    validations:
+      required: true
+
+  - type: textarea
+    id: syntax
+    attributes:
+      label: Antlers example
+      description: Provide the smallest representative template and link relevant Statamic documentation when available.
+      render: html
+    validations:
+      required: true
+
+  - type: textarea
+    id: tree
+    attributes:
+      label: Proposed syntax tree
+      description: Show or describe the nodes and fields you expect the grammar to produce.
+      render: text
+    validations:
+      required: true
+
+  - type: textarea
+    id: consumers
+    attributes:
+      label: Consumer use case
+      description: Explain how an editor, query, formatter, or other Tree-sitter consumer would use the new structure.
+    validations:
+      required: true
+
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+      description: Share any query-level workaround or alternate tree shape you considered.

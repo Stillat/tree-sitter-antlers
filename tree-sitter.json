@@ -1,0 +1,25 @@
+{
+  "grammars": [
+    {
+      "name": "antlers",
+      "camelcase": "Antlers",
+      "scope": "text.html.antlers",
+      "path": ".",
+      "file-types": ["antlers.html", "antlers.php", "antlers.xml"],
+      "injection-regex": "^antlers$"
+    }
+  ],
+  "metadata": {
+    "version": "0.4.0",
+    "license": "MIT",
+    "description": "Tree-sitter grammar for Statamic Antlers templates",
+    "authors": [{ "name": "John Koster" }],
+    "links": { "repository": "https://github.com/Stillat/tree-sitter-antlers" }
+  },
+  "bindings": {
+    "c": true,
+    "node": false,
+    "rust": false,
+    "swift": false
+  }
+}

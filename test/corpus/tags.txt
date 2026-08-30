@@ -1,0 +1,1689 @@
+==================
+Variables and modifiers
+==================
+
+<h1>{{ title | upper }}</h1>
+{{ meta_title ?? title ?? "No title" }}
+
+---
+
+(document
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (modifier
+        (operator)
+        (modifier_name))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (path)
+      (operator)
+      (string
+        (string_content))))
+  (text))
+
+==================
+Case-insensitive logical keywords and constants
+==================
+
+{{ TrUe AND FALSE oR something }}
+{{ NULL ?? fallback }}
+{{ tuple = LiSt(name, color; 'Taylor', 'blue') }}
+{{ true_value ANDromeda ORBIT null_value list_items }}
+
+---
+
+(document
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (path)
+      (path)
+      (path)
+      (path)))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (path)))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (path)
+      (group
+        (path)
+        (punctuation)
+        (path)
+        (punctuation)
+        (string
+          (string_content))
+        (punctuation)
+        (string
+          (string_content)))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (path)
+      (path)
+      (path)
+      (path)))
+  (text))
+
+==================
+Named arguments and ternary controls
+==================
+
+{{ choice = choose(primary: title, fallback: wrapper(value)) }}
+{{ result = service->render(template: 'card', data: payload) }}
+{{ ternary_control = (condition ? yes : no) }}
+
+---
+
+(document
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (path)
+      (group
+        (path)
+        (operator)
+        (path)
+        (punctuation)
+        (path)
+        (operator)
+        (path)
+        (group
+          (path)))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (method_chain
+        (path)
+        (method_invocation
+          (operator)
+          (method_name)
+          (group
+            (path)
+            (operator)
+            (string
+              (string_content))
+            (punctuation)
+            (path)
+            (operator)
+            (path))))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (group
+        (path)
+        (operator)
+        (path)
+        (operator)
+        (path))))
+  (text))
+
+==================
+Incomplete comments remain opaque
+==================
+
+<p>Content before.</p>
+{{# Work in progress.
+{{ should_stay_opaque | upper }}
+
+---
+
+(document
+  (text)
+  (comment))
+
+==================
+Incomplete comment with hash terminator fragment
+==================
+
+{{# Work in progress. #
+
+---
+
+(document
+  (text)
+  (comment))
+
+==================
+Incomplete comment with hash-brace terminator fragment
+==================
+
+{{# Work in progress. #}
+
+---
+
+(document
+  (text)
+  (comment))
+
+==================
+Incomplete ordinary tag recovery
+==================
+
+<p>Content before.</p>
+{{ title | upper
+
+---
+
+(document
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (modifier
+        (operator)
+        (modifier_name)))))
+
+==================
+Incomplete closing tag recovery
+==================
+
+{{ /collection:articles
+
+---
+
+(document
+  (text)
+  (antlers_tag
+    (closing_marker)
+    (tag_body
+      (path))))
+
+==================
+Incomplete closing tag recovers before following tag
+==================
+
+{{ collection:articles }}
+    <p>Content before an unfinished closing tag.</p>
+{{ /collection:articles
+
+{{ collection:next }}
+    <p>{{ title }}</p>
+{{ /collection:next }}
+
+---
+
+(document
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)))
+  (text)
+  (antlers_tag
+    (closing_marker)
+    (tag_body
+      (path)))
+  (text)
+  (tag_pair
+    (antlers_tag
+      (tag_body
+        (path)))
+    (tag_pair_body
+      (text)
+      (antlers_tag
+        (tag_body
+          (path)))
+      (text))
+    (antlers_tag
+      (closing_marker)
+      (tag_body
+        (path))))
+  (text))
+
+==================
+Component directives and escapes
+==================
+
+@props(['title', 'count' => 0])
+@aware (['theme' => theme])
+@props
+(
+  ['multiline']
+)
+@cascade
+@cascade(['layout' => layout])
+@@props
+@props
+
+---
+
+(document
+  (text)
+  (antlers_directive
+    (directive_name)
+    (group
+      (array
+        (string
+          (string_content))
+        (string
+          (string_content))
+        (operator)
+        (number))))
+  (text)
+  (antlers_directive
+    (directive_name)
+    (group
+      (array
+        (string
+          (string_content))
+        (operator)
+        (path))))
+  (text)
+  (antlers_directive
+    (directive_name)
+    (group
+      (array
+        (string
+          (string_content)))))
+  (text)
+  (antlers_directive
+    (directive_name))
+  (text)
+  (antlers_directive
+    (directive_name)
+    (group
+      (array
+        (string
+          (string_content))
+        (operator)
+        (path))))
+  (text)
+  (escaped_directive)
+  (text)
+  (text)
+  (text))
+
+==================
+Recursive and subrecursive references
+==================
+
+{{ nav }}
+  {{ *recursive children* }}
+{{ /nav }}
+{{ colors }}
+  {{ *subrecursive colors* }}
+{{ /colors }}
+{{ *subrecursive [primary, secondary]* }}
+{{ total = left * recursive * right }}
+{{ * recursive * }}
+
+---
+
+(document
+  (text)
+  (tag_pair
+    (antlers_tag
+      (tag_body
+        (path)))
+    (tag_pair_body
+      (text)
+      (antlers_tag
+        (tag_body
+          (recursive_reference
+            (recursive_marker)
+            (recursive_kind)
+            (path)
+            (recursive_marker))))
+      (text))
+    (antlers_tag
+      (closing_marker)
+      (tag_body
+        (path))))
+  (text)
+  (tag_pair
+    (antlers_tag
+      (tag_body
+        (path)))
+    (tag_pair_body
+      (text)
+      (antlers_tag
+        (tag_body
+          (recursive_reference
+            (recursive_marker)
+            (recursive_kind)
+            (path)
+            (recursive_marker))))
+      (text))
+    (antlers_tag
+      (closing_marker)
+      (tag_body
+        (path))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (recursive_reference
+        (recursive_marker)
+        (recursive_kind)
+        (array
+          (path)
+          (path))
+        (recursive_marker))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (path)
+      (operator)
+      (path)
+      (operator)
+      (path)))
+  (text)
+  (antlers_tag
+    (tag_body
+      (operator)
+      (path)
+      (operator)))
+  (text))
+
+==================
+Explicit tag and variable disambiguation
+==================
+
+{{ %collection:blog limit="1" }}
+  {{ $strict_variable }}
+  {{ $$explicit_variable }}
+{{ /%collection:blog }}
+{{ remainder = total % divisor }}
+
+---
+
+(document
+  (text)
+  (tag_pair
+    (antlers_tag
+      (tag_body
+        (explicit_tag)
+        (parameter
+          (path)
+          (operator)
+          (string
+            (string_content)))))
+    (tag_pair_body
+      (text)
+      (antlers_tag
+        (tag_body
+          (path)))
+      (text)
+      (antlers_tag
+        (tag_body
+          (path)))
+      (text))
+    (antlers_tag
+      (closing_marker)
+      (tag_body
+        (explicit_tag))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (path)
+      (operator)
+      (path)))
+  (text))
+
+==================
+Arbitrary and nested tag pairs
+==================
+
+{{ collection:articles from="blog" }}
+  <article>
+    {{ items }}
+      {{ title }}
+    {{ /items }}
+  </article>
+{{ /collection:articles }}
+
+---
+
+(document
+  (text)
+  (tag_pair
+    (antlers_tag
+      (tag_body
+        (path)
+        (parameter
+          (path)
+          (operator)
+          (string
+            (string_content)))))
+    (tag_pair_body
+      (text)
+      (tag_pair
+        (antlers_tag
+          (tag_body
+            (path)))
+        (tag_pair_body
+          (text)
+          (antlers_tag
+            (tag_body
+              (path)))
+          (text))
+        (antlers_tag
+          (closing_marker)
+          (tag_body
+            (path))))
+      (text))
+    (antlers_tag
+      (closing_marker)
+      (tag_body
+        (path))))
+  (text))
+
+==================
+Dynamic compound tag names
+==================
+
+{{ collection:{thing} }}
+  {{ title }}
+{{ /collection:{thing} }}
+
+{{ collection:{thing} }}
+{{ /collection:{other} }}
+
+{{ assets:0 }}
+{{ assets:0:0 }}
+{{ assets:0:0:test }}
+
+---
+
+(document
+  (text)
+  (tag_pair
+    (antlers_tag
+      (tag_body
+        (dynamic_tag_name
+          (path)
+          (punctuation)
+          (punctuation)
+          (path)
+          (punctuation))))
+    (tag_pair_body
+      (text)
+      (antlers_tag
+        (tag_body
+          (path)))
+      (text))
+    (antlers_tag
+      (closing_marker)
+      (tag_body
+        (dynamic_tag_name
+          (path)
+          (punctuation)
+          (punctuation)
+          (path)
+          (punctuation)))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (dynamic_tag_name
+        (path)
+        (punctuation)
+        (punctuation)
+        (path)
+        (punctuation))))
+  (text)
+  (antlers_tag
+    (closing_marker)
+    (tag_body
+      (dynamic_tag_name
+        (path)
+        (punctuation)
+        (punctuation)
+        (path)
+        (punctuation))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (number)))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (number)
+      (operator)
+      (number)))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (number)
+      (operator)
+      (number)
+      (operator)
+      (path)))
+  (text))
+
+==================
+Nested same-name pairs
+==================
+
+{{ scope }}
+  {{ scope }}{{ value }}{{ /scope }}
+{{ /scope }}
+
+---
+
+(document
+  (text)
+  (tag_pair
+    (antlers_tag
+      (tag_body
+        (path)))
+    (tag_pair_body
+      (text)
+      (tag_pair
+        (antlers_tag
+          (tag_body
+            (path)))
+        (tag_pair_body
+          (antlers_tag
+            (tag_body
+              (path))))
+        (antlers_tag
+          (closing_marker)
+          (tag_body
+            (path))))
+      (text))
+    (antlers_tag
+      (closing_marker)
+      (tag_body
+        (path))))
+  (text))
+
+==================
+Pair lookalikes in strings, comments, and escaped Antlers
+==================
+
+{{ wrapper }}
+  {{ value source="{{ /wrapper }}" }}
+  {{# {{ /wrapper }} #}}
+  @{{ /wrapper }}
+{{ /wrapper }}
+
+---
+
+(document
+  (text)
+  (tag_pair
+    (antlers_tag
+      (tag_body
+        (path)))
+    (tag_pair_body
+      (text)
+      (antlers_tag
+        (tag_body
+          (path)
+          (parameter
+            (path)
+            (operator)
+            (string
+              (antlers_tag
+                (closing_marker)
+                (tag_body
+                  (path)))))))
+      (text)
+      (comment)
+      (text)
+      (escaped_antlers)
+      (text))
+    (antlers_tag
+      (closing_marker)
+      (tag_body
+        (path))))
+  (text))
+
+==================
+Unmatched and mismatched tags remain resilient
+==================
+
+{{ title }}
+{{ collection }}
+  body
+{{ /wrong }}
+{{ card /}}
+
+---
+
+(document
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)))
+  (text)
+  (antlers_tag
+    (closing_marker)
+    (tag_body
+      (path)))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path))
+    (self_closing_end))
+  (text))
+
+==================
+Tag parameters and pair markers
+==================
+
+{{ collection:articles from="blog" :limit="page_size" status:in="published|draft" }}
+  {{ title }}
+{{ /collection:articles }}
+{{ partial:navigation/tabs theme="dark" /}}
+
+---
+
+(document
+  (text)
+  (tag_pair
+    (antlers_tag
+      (tag_body
+        (path)
+        (parameter
+          (path)
+          (operator)
+          (string
+            (string_content)))
+        (parameter
+          (parameter_prefix)
+          (path)
+          (operator)
+          (string
+            (string_content)))
+        (parameter
+          (path)
+          (operator)
+          (string
+            (string_content)))))
+    (tag_pair_body
+      (text)
+      (antlers_tag
+        (tag_body
+          (path)))
+      (text))
+    (antlers_tag
+      (closing_marker)
+      (tag_body
+        (path))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (parameter
+        (path)
+        (operator)
+        (string
+          (string_content))))
+    (self_closing_end))
+  (text))
+
+==================
+Conditionals and expressions
+==================
+
+{{ if logged_in && (role == 'admin' || role == 'editor') }}
+{{ elseif score >= 10 }}
+{{ else }}
+{{ /if }}
+
+---
+
+(document
+  (text)
+  (conditional
+    (antlers_tag
+      (tag_body
+        (keyword)
+        (path)
+        (operator)
+        (group
+          (path)
+          (operator)
+          (string
+            (string_content))
+          (operator)
+          (path)
+          (operator)
+          (string
+            (string_content)))))
+    (conditional_body
+      (text))
+    (antlers_tag
+      (tag_body
+        (keyword)
+        (path)
+        (operator)
+        (number)))
+    (conditional_body
+      (text))
+    (antlers_tag
+      (tag_body
+        (keyword)))
+    (conditional_body
+      (text))
+    (antlers_tag
+      (closing_marker)
+      (tag_body
+        (keyword))))
+  (text))
+
+==================
+Comments and PHP regions
+==================
+
+{{# A comment containing {{ title }}. #}}
+{{? $value = route('home'); ?}}
+{{$ $value ?? 'fallback' $}}
+
+---
+
+(document
+  (text)
+  (comment)
+  (text)
+  (php_statement
+    (php_code))
+  (text)
+  (php_echo
+    (php_code))
+  (text))
+
+==================
+Nested and legacy conditional blocks
+==================
+
+{{ if outer }}
+  {{ unless inner }}
+  {{ elseunless preview }}
+  {{ else }}
+  {{ /unless }}
+{{ endif }}
+
+---
+
+(document
+  (text)
+  (conditional
+    (antlers_tag
+      (tag_body
+        (keyword)
+        (path)))
+    (conditional_body
+      (text)
+      (conditional
+        (antlers_tag
+          (tag_body
+            (keyword)
+            (path)))
+        (conditional_body
+          (text))
+        (antlers_tag
+          (tag_body
+            (keyword)
+            (path)))
+        (conditional_body
+          (text))
+        (antlers_tag
+          (tag_body
+            (keyword)))
+        (conditional_body
+          (text))
+        (antlers_tag
+          (closing_marker)
+          (tag_body
+            (keyword))))
+      (text))
+    (antlers_tag
+      (tag_body
+        (keyword))))
+  (text))
+
+==================
+Incomplete conditional recovery
+==================
+
+{{ unless maintenance_mode }}
+  <main>{{ slot }}</main>
+
+---
+
+(document
+  (text)
+  (conditional
+    (antlers_tag
+      (tag_body
+        (keyword)
+        (path)))
+    (conditional_body
+      (text)
+      (antlers_tag
+        (tag_body
+          (path)))
+      (text))))
+
+==================
+Conditional keyword lookalikes remain ordinary tags
+==================
+
+{{ iffy }}
+{{ if:related }}
+{{ unless-this }}
+
+---
+
+(document
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)))
+  (text))
+
+==================
+Methods, arrays, and assignments
+==================
+
+{{ view:test[hello] | upper:test:param:"hello :|" | lower }}
+{{ datetime:parse("October 12, 2001"):addDays(10):toAtomString() }}
+{{ $title->length() }}
+{{ slot->hasActualContent()->trim() }}
+{{ slot.hasActualContent() }}
+{{ instance->join(['one', 'two', ['three']]) }}
+{{ instance:join(['one', 'two']) }}
+{{ attributes.merge(['class' => 'hello']).merge(['class' => 'another']) }}
+{{ values = ['a' => ['b' => [true, false, null]]] }}
+{{ posts[1].title }}
+
+---
+
+(document
+  (text)
+  (antlers_tag
+    (tag_body
+      (subscript_expression
+        (path)
+        (subscript
+          (path)))
+      (modifier
+        (operator)
+        (modifier_name)
+        (legacy_modifier_arguments
+          (legacy_modifier_argument
+            (punctuation)
+            (legacy_modifier_value))
+          (legacy_modifier_argument
+            (punctuation)
+            (legacy_modifier_value))
+          (legacy_modifier_argument
+            (punctuation)
+            (string
+              (string_content)))))
+      (modifier
+        (operator)
+        (modifier_name))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (method_chain
+        (path)
+        (method_invocation
+          (operator)
+          (method_name)
+          (group
+            (string
+              (string_content))))
+        (method_invocation
+          (operator)
+          (method_name)
+          (group
+            (number)))
+        (method_invocation
+          (operator)
+          (method_name)
+          (group)))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (method_chain
+        (path)
+        (method_invocation
+          (operator)
+          (method_name)
+          (group)))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (method_chain
+        (path)
+        (method_invocation
+          (operator)
+          (method_name)
+          (group))
+        (method_invocation
+          (operator)
+          (method_name)
+          (group)))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (method_chain
+        (path)
+        (method_invocation
+          (operator)
+          (method_name)
+          (group)))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (method_chain
+        (path)
+        (method_invocation
+          (operator)
+          (method_name)
+          (group
+            (array
+              (string
+                (string_content))
+              (string
+                (string_content))
+              (array
+                (string
+                  (string_content)))))))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (method_chain
+        (path)
+        (method_invocation
+          (operator)
+          (method_name)
+          (group
+            (array
+              (string
+                (string_content))
+              (string
+                (string_content))))))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (method_chain
+        (path)
+        (method_invocation
+          (operator)
+          (method_name)
+          (group
+            (array
+              (string
+                (string_content))
+              (operator)
+              (string
+                (string_content)))))
+        (method_invocation
+          (operator)
+          (method_name)
+          (group
+            (array
+              (string
+                (string_content))
+              (operator)
+              (string
+                (string_content))))))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (array
+        (string
+          (string_content))
+        (operator)
+        (array
+          (string
+            (string_content))
+          (operator)
+          (array
+            (boolean)
+            (boolean)
+            (null))))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (subscript_expression
+        (path)
+        (subscript
+          (number)))
+      (operator)
+      (path)))
+  (text))
+
+==================
+YAML front matter
+==================
+---
+title: Example
+description: "A value containing --- remains YAML"
+features:
+  - antlers
+---
+<h1>{{ title }}</h1>
+
+------
+
+(document
+  (front_matter
+    (front_matter_delimiter)
+    (front_matter_content)
+    (front_matter_delimiter))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)))
+  (text))
+
+==================
+Escaped Antlers and string braces
+==================
+
+@{{ escaped }}
+{{ value = "hello@{world@}" }}
+
+---
+
+(document
+  (text)
+  (escaped_antlers)
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (string
+        (string_content)
+        (escaped_brace)
+        (string_content)
+        (escaped_brace))))
+  (text))
+
+==================
+Nested interpolation in parameter strings
+==================
+
+{{ partial:x parameter="{{ value }}" interpolation="{title}" /}}
+
+---
+
+(document
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (parameter
+        (path)
+        (operator)
+        (string
+          (antlers_tag
+            (tag_body
+              (path)))))
+      (parameter
+        (path)
+        (operator)
+        (string
+          (interpolation
+            (tag_body
+              (path))))))
+    (self_closing_end))
+  (text))
+
+==================
+Multiline nested tags do not trigger recovery
+==================
+
+{{ partial:test title="
+{{ title }}
+" }}
+
+---
+
+(document
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (parameter
+        (path)
+        (operator)
+        (string
+          (string_content)
+          (antlers_tag
+            (tag_body
+              (path)))
+          (string_content)))))
+  (text))
+
+==================
+Fallback, ternary, and concatenation operators
+==================
+
+{{ result = value ??? fallback }}
+{{ result ? yes : no }}
+{{ message &= suffix }}
+{{ fallback ?= default_value }}
+{{ compact ?: fallback }}
+
+---
+
+(document
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (path)
+      (operator)
+      (path)))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (path)
+      (operator)
+      (path)))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (path)))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (path)))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (path)))
+  (text))
+
+==================
+Documented parameter and modifier forms
+==================
+
+{{ collection:blog limit="5" :from="source" :$class \x-data="{ submittable: false }" }}
+{{ form \x-data="{ open: false, title: '{{ title }}' }" \data-json='{"key":"{value}"}' }}
+{{ title | upper | ensure_right('!') }}
+{{ result ? yes : no }}
+
+---
+
+(document
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (parameter
+        (path)
+        (operator)
+        (string
+          (string_content)))
+      (parameter
+        (parameter_prefix)
+        (path)
+        (operator)
+        (string
+          (string_content)))
+      (shorthand_parameter)
+      (parameter
+        (ignored_parameter_prefix)
+        (path)
+        (operator)
+        (ignored_string
+          (string_content)))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (parameter
+        (ignored_parameter_prefix)
+        (path)
+        (operator)
+        (ignored_string
+          (string_content)))
+      (parameter
+        (ignored_parameter_prefix)
+        (path)
+        (operator)
+        (ignored_string
+          (string_content)))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (modifier
+        (operator)
+        (modifier_name))
+      (modifier
+        (operator)
+        (modifier_name)
+        (group
+          (string
+            (string_content))))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (path)
+      (operator)
+      (path)))
+  (text))
+
+==================
+Tag subexpressions and string interpolation
+==================
+
+{{ items = {collection:products sort="rating:desc" limit="5"} }}
+{{ merged = {collection:headlines} merge {collection:news limit="5"} }}
+<a href="/{segment_1}/{slug}">{{ title }}</a>
+
+---
+
+(document
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (interpolation
+        (tag_body
+          (path)
+          (parameter
+            (path)
+            (operator)
+            (string
+              (string_content)))
+          (parameter
+            (path)
+            (operator)
+            (string
+              (string_content)))))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (interpolation
+        (tag_body
+          (path)))
+      (path)
+      (interpolation
+        (tag_body
+          (path)
+          (parameter
+            (path)
+            (operator)
+            (string
+              (string_content)))))))
+  (text)
+  (text)
+  (text)
+  (text)
+  (text)
+  (text)
+  (text)
+  (text)
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)))
+  (text))
+
+==================
+Bracket access and contextual constants
+==================
+
+{{ skaters[2]['name'] }}
+{{ mailing_address[field] }}
+{{ complex_data[3][field]['title'] }}
+{{ selected = items[index + 1] }}
+{{ svg class="{wide ? 'w-full' : void}" }}
+{{ grouped = products groupby (category) as 'entries' }}
+
+---
+
+(document
+  (text)
+  (antlers_tag
+    (tag_body
+      (subscript_expression
+        (path)
+        (subscript
+          (number))
+        (subscript
+          (string
+            (string_content))))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (subscript_expression
+        (path)
+        (subscript
+          (path)))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (subscript_expression
+        (path)
+        (subscript
+          (number))
+        (subscript
+          (path))
+        (subscript
+          (string
+            (string_content))))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (subscript_expression
+        (path)
+        (subscript
+          (path)
+          (operator)
+          (number)))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (parameter
+        (path)
+        (operator)
+        (string
+          (interpolation
+            (tag_body
+              (path)
+              (operator)
+              (string
+                (string_content))
+              (operator)
+              (void)))))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (path)
+      (path)
+      (group
+        (path))
+      (path)
+      (string
+        (string_content))))
+  (text))
+
+==================
+Opaque noparse regions
+==================
+
+{{ wrapper }}
+  {{ noparse }}
+    <p>{{ title | upper }}</p>
+    {{ if hidden }}not executable{{ /if }}
+    literal { brace {{ /not_noparse }} {{ still_not_executable }}
+  {{ /noparse }}
+{{ /wrapper }}
+{{ noparse }}{{ /noparse }}
+{{ noparse }}unclosed
+
+---
+
+(document
+  (text)
+  (tag_pair
+    (antlers_tag
+      (tag_body
+        (path)))
+    (tag_pair_body
+      (text)
+      (noparse
+        (antlers_tag
+          (tag_body
+            (path)))
+        (noparse_content)
+        (antlers_tag
+          (closing_marker)
+          (tag_body
+            (path))))
+      (text))
+    (antlers_tag
+      (closing_marker)
+      (tag_body
+        (path))))
+  (text)
+  (noparse
+    (antlers_tag
+      (tag_body
+        (path)))
+    (antlers_tag
+      (closing_marker)
+      (tag_body
+        (path))))
+  (text)
+  (noparse
+    (antlers_tag
+      (tag_body
+        (path)))
+    (noparse_content)))
+
+==================
+Native PHP regions
+==================
+
+<?xml version="1.0"?>
+<?php $greeting = 'hello'; ?>
+<p><?= strtoupper($greeting) ?></p>
+<?php
+$unfinished = true;
+
+---
+
+(document
+  (text)
+  (text)
+  (text)
+  (php_statement
+    (php_code))
+  (text)
+  (php_echo
+    (php_code))
+  (text)
+  (php_statement
+    (php_code)))
+
+==================
+Legacy modifier arguments and nested modifiers
+==================
+
+{{ title | test_param:test:param:"hello :|" | lower }}
+{{ values | join:', ' }}
+{{ value | subtract:{2 + 3} }}
+{{ date | modify_date:+3 years | format:Y }}
+{{ url | contains:/about/news && uri !== '/about/news' }}
+{{ excerpt ? excerpt | widont : content | strip_tags | safe_truncate:160:... }}
+{{ switch(((index | mod:2) == 0) => 'even', () => 'odd') }}
+
+---
+
+(document
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (modifier
+        (operator)
+        (modifier_name)
+        (legacy_modifier_arguments
+          (legacy_modifier_argument
+            (punctuation)
+            (legacy_modifier_value))
+          (legacy_modifier_argument
+            (punctuation)
+            (legacy_modifier_value))
+          (legacy_modifier_argument
+            (punctuation)
+            (string
+              (string_content)))))
+      (modifier
+        (operator)
+        (modifier_name))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (modifier
+        (operator)
+        (modifier_name)
+        (legacy_modifier_arguments
+          (legacy_modifier_argument
+            (punctuation)
+            (string
+              (string_content)))))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (modifier
+        (operator)
+        (modifier_name)
+        (legacy_modifier_arguments
+          (legacy_modifier_argument
+            (punctuation)
+            (interpolation
+              (tag_body
+                (number)
+                (operator)
+                (number))))))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (modifier
+        (operator)
+        (modifier_name)
+        (legacy_modifier_arguments
+          (legacy_modifier_argument
+            (punctuation)
+            (legacy_modifier_value))))
+      (modifier
+        (operator)
+        (modifier_name)
+        (legacy_modifier_arguments
+          (legacy_modifier_argument
+            (punctuation)
+            (legacy_modifier_value))))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (modifier
+        (operator)
+        (modifier_name)
+        (legacy_modifier_arguments
+          (legacy_modifier_argument
+            (punctuation)
+            (legacy_modifier_value))))
+      (operator)
+      (path)
+      (operator)
+      (string
+        (string_content))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (operator)
+      (path)
+      (modifier
+        (operator)
+        (modifier_name))
+      (operator)
+      (path)
+      (modifier
+        (operator)
+        (modifier_name))
+      (modifier
+        (operator)
+        (modifier_name)
+        (legacy_modifier_arguments
+          (legacy_modifier_argument
+            (punctuation)
+            (number))
+          (legacy_modifier_argument
+            (punctuation)
+            (legacy_modifier_value))))))
+  (text)
+  (antlers_tag
+    (tag_body
+      (path)
+      (group
+        (group
+          (group
+            (path)
+            (modifier
+              (operator)
+              (modifier_name)
+              (legacy_modifier_arguments
+                (legacy_modifier_argument
+                  (punctuation)
+                  (number)))))
+          (operator)
+          (number))
+        (operator)
+        (string
+          (string_content))
+        (punctuation)
+        (group)
+        (operator)
+        (string
+          (string_content)))))
+  (text))

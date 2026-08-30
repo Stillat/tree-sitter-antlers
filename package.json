@@ -1,0 +1,34 @@
+{
+  "name": "tree-sitter-antlers",
+  "version": "0.4.0",
+  "description": "Tree-sitter grammar for Statamic Antlers templates",
+  "author": "John Koster",
+  "license": "MIT",
+  "homepage": "https://github.com/Stillat/tree-sitter-antlers#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Stillat/tree-sitter-antlers.git"
+  },
+  "bugs": {
+    "url": "https://github.com/Stillat/tree-sitter-antlers/issues"
+  },
+  "funding": "https://github.com/sponsors/johnathonkoster",
+  "keywords": [
+    "antlers",
+    "parser",
+    "statamic",
+    "tree-sitter"
+  ],
+  "files": [
+    "grammar.js",
+    "tree-sitter.json",
+    "src/**"
+  ],
+  "devDependencies": {
+    "tree-sitter-cli": "0.25.8"
+  },
+  "scripts": {
+    "generate": "tree-sitter generate",
+    "test": "tree-sitter test"
+  }
+}

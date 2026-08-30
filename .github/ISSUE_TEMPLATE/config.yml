@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Statamic Antlers documentation
+    url: https://statamic.dev/antlers
+    about: Check the documented Antlers syntax and behavior.
+  - name: Tree-sitter documentation
+    url: https://tree-sitter.github.io/tree-sitter/
+    about: Learn about Tree-sitter grammars, syntax trees, queries, and integrations.
